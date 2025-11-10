@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My First Website</title>
+    <style>
+        /* ---------- Page Basics ---------- */
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 30px 10px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #222;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+            letter-spacing: 1px;
+            animation: fadeIn 2s ease;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #444;
+        }
+
+        /* ---------- Image Style ---------- */
+        img {
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        img:hover {
+            transform: scale(1.08);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ---------- Section Box ---------- */
+        section {
+            background: rgba(255, 255, 255, 0.8);
+            margin: 40px auto;
+            padding: 25px;
+            width: 70%;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: slideUp 1.5s ease;
+        }
+
+        /* ---------- Links and Buttons ---------- */
+        a {
+            color: #fff;
+            text-decoration: none;
+            background-color: #0078d7;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: 0.3s ease;
+            font-weight: bold;
+        }
+
+        a:hover {
+            background-color: #005fa3;
+            box-shadow: 0 5px 15px rgba(0, 90, 200, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            padding: 15px 0;
+            font-size: 0.9rem;
+            margin-top: 40px;
+        }
+
+        /* ---------- Animations ---------- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Welcome to Our Page</h1>
+        <p>Get ready to train yourself for interview success!</p>
+    </header>
+
+    <img src="https://via.placeholder.com/300" alt="Sample Image" width="300">
+
+    <section>
+        <h2>About This</h2>
+        <p>I am a BCA student interested in web development and programming.</p>
+    </section>
+
+    <section>
+        <h2>Train Yourself</h2>
+        <p>💻 Boost your skills with the link below!</p>
+        <a href="save.py">Train Yourself</a>
+    </section>
+
+    <section>
+        <h2>Contact Me</h2>
+        <p>Email: <a href="mailto:example@email.com" style="background:none; color:#0078d7;">example@email.com</a></p>
+    </section>
+
+    <footer>
+        <p>© 2025 My First Project | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>
