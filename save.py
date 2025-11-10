@@ -33,7 +33,6 @@ fps = int(cap.get(cv2.CAP_PROP_FPS)) or 30
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(filename, fourcc, fps, (w, h))
 
-# ---- state trackers ----
 finger_close_start = {"Left": [None]*5, "Right": [None]*5}
 last_wrist_pos = {"Left": None, "Right": None}
 still_start = {"Left": None, "Right": None}
@@ -52,7 +51,6 @@ while True:
     hands_res = hands.process(img_rgb)
     errors = []
 
-    # ===== pose landmarks (chin & hip) =====
     if pose_res.pose_landmarks:
         lm = pose_res.pose_landmarks.landmark
         chin_y = lm[mp_pose.PoseLandmark.NOSE].y
@@ -61,31 +59,27 @@ while True:
     else:
         errors.append("❌ Pose not detected!")
 
-    # ===== hands detection =====
-    hand_info = {}  # label -> landmarks
+    hand_info = {}
     if hands_res.multi_hand_landmarks and hands_res.multi_handedness:
         for hlm, handed in zip(hands_res.multi_hand_landmarks, hands_res.multi_handedness):
-            label = handed.classification[0].label  # "Left"/"Right"
+            label = handed.classification[0].label
             hand_info[label] = hlm
             mp_drawing.draw_landmarks(frame, hlm, mp_hands.HAND_CONNECTIONS)
 
-    # ===== process each detected hand =====
     for label in ("Left", "Right"):
         now = time.time()
         if label not in hand_info:
-            # Hand missing from frame — start timer
             if out_of_frame_start[label] is None:
                 out_of_frame_start[label] = now
             elif now - out_of_frame_start[label] > OUT_OF_FRAME_LIMIT:
                 errors.append(f"❌ {label} hand out of frame > {int(OUT_OF_FRAME_LIMIT)} s!")
             continue
         else:
-            out_of_frame_start[label] = None  # reset timer
+            out_of_frame_start[label] = None
 
         hlm = hand_info[label]
         wrist = hlm.landmark[mp_hands.HandLandmark.WRIST]
 
-        # 2️⃣ between chin & hip (if pose available)
         if pose_res.pose_landmarks:
             out_of_range = False
             for idx in [mp_hands.HandLandmark.WRIST] + [4, 8, 12, 16, 20]:
@@ -96,7 +90,6 @@ while True:
             if out_of_range:
                 errors.append(f"⚠️ {label} hand out of chin–hip range!")
 
-        # 3️⃣ finger closed > 5 s
         for i, tip in enumerate(TIP_IDS):
             if tip == 4:
                 closed = hlm.landmark[tip].x > hlm.landmark[3].x if label == "Right" else hlm.landmark[tip].x < hlm.landmark[3].x
@@ -110,7 +103,6 @@ while True:
             else:
                 finger_close_start[label][i] = None
 
-        # 6️⃣ stillness detection
         pos = (wrist.x, wrist.y)
         if last_wrist_pos[label] is None:
             last_wrist_pos[label] = pos
@@ -126,7 +118,6 @@ while True:
                 still_start[label] = None
             last_wrist_pos[label] = pos
 
-    # 5️⃣ hands tied (too close)
     if "Left" in hand_info and "Right" in hand_info:
         lw = hand_info["Left"].landmark[mp_hands.HandLandmark.WRIST]
         rw = hand_info["Right"].landmark[mp_hands.HandLandmark.WRIST]
@@ -134,7 +125,6 @@ while True:
         if dist < TIED_DISTANCE_THRESH:
             errors.append("❌ Hands too close (tied together)!")
 
-    # ===== draw text =====
     if errors:
         for i, e in enumerate(dict.fromkeys(errors)):
             cv2.putText(frame, e, (20, 40 + 30*i), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255), 2)
